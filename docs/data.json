@@ -1,0 +1,108 @@
+{
+    "project": {
+        "name": "Twitter PIN Auth",
+        "description": "Twitter PIN Auth: A api wrapper to authenticate with twitter using the PIN-based authorization method",
+        "version": "0.1.0",
+        "url": "https://github.com/chrisenytc/twitter-pin-auth"
+    },
+    "files": {
+        "lib/twitter-pin-auth.js": {
+            "name": "lib/twitter-pin-auth.js",
+            "modules": {},
+            "classes": {
+                "TwitterPinAuth": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {},
+    "classes": {
+        "TwitterPinAuth": {
+            "name": "TwitterPinAuth",
+            "shortname": "TwitterPinAuth",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "lib/twitter-pin-auth.js",
+            "line": 18,
+            "is_constructor": 1,
+            "example": [
+                "\n\n    var api = new TwitterPinAuth('consumerKey', 'consumerSecret');"
+            ],
+            "params": [
+                {
+                    "name": "consumerKey",
+                    "description": "The twitter consumer key",
+                    "type": "String"
+                },
+                {
+                    "name": "consumerSecret",
+                    "description": "The twitter consumer secret",
+                    "type": "String"
+                }
+            ]
+        }
+    },
+    "classitems": [
+        {
+            "file": "lib/twitter-pin-auth.js",
+            "line": 11,
+            "description": "Module Dependencies",
+            "class": "TwitterPinAuth"
+        },
+        {
+            "file": "lib/twitter-pin-auth.js",
+            "line": 54,
+            "description": "Method responsible for request a authorization url",
+            "example": [
+                "\n\n    api.requestAuthUrl(function(err, url) {\n         console.log(url);\n    });"
+            ],
+            "itemtype": "method",
+            "name": "requestAuthUrl",
+            "access": "public",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "A callback with authorization url",
+                    "type": "Function"
+                }
+            ],
+            "class": "TwitterPinAuth"
+        },
+        {
+            "file": "lib/twitter-pin-auth.js",
+            "line": 85,
+            "description": "Method responsible for generate a accessTokenKey and accessTokenSecret",
+            "example": [
+                "\n\n    api.authorize(3321883, function(err, data) {\n         console.log(data.accessTokenKey, data.accessTokenSecret);\n    });"
+            ],
+            "itemtype": "method",
+            "name": "authorize",
+            "access": "public",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "pin",
+                    "description": "A pin number",
+                    "type": "Number"
+                },
+                {
+                    "name": "callback",
+                    "description": "A callback with accessTokenKey and accessTokenSecret",
+                    "type": "Function"
+                }
+            ],
+            "class": "TwitterPinAuth"
+        }
+    ],
+    "warnings": [
+        {
+            "message": "Missing item type\nModule Dependencies",
+            "line": " lib/twitter-pin-auth.js:11"
+        }
+    ]
+}

@@ -1,0 +1,49 @@
+{
+  "name": "twitter-pin-auth",
+  "description": "A api wrapper to authenticate with twitter using the PIN-based authorization method",
+  "version": "0.1.0",
+  "homepage": "https://github.com/chrisenytc/twitter-pin-auth",
+  "author": {
+    "name": "Christopher EnyTC",
+    "email": "chrisenytc@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/chrisenytc/twitter-pin-auth.git"
+  },
+  "bugs": {
+    "url": "https://github.com/chrisenytc/twitter-pin-auth/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/chrisenytc/twitter-pin-auth/blob/master/LICENSE"
+    }
+  ],
+  "main": "lib/twitter-pin-auth",
+  "engines": {
+    "node": ">= 0.10.36",
+    "npm": ">=1.4.28"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "dependencies": {
+    "bluebird": "~2.9.14",
+    "oauth": "~0.9.12"
+  },
+  "devDependencies": {
+    "chai": "~2.1.2",
+    "gulp": "~3.8.2",
+    "mocha": "~2.2.1",
+    "supertest": "~0.15.0"
+  },
+  "keywords": [
+    "twitter",
+    "pin",
+    "pin-based",
+    "oauth",
+    "authorization",
+    "authentication"
+  ]
+}

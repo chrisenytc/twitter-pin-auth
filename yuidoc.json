@@ -1,0 +1,10 @@
+{
+    "name": "Twitter PIN Auth",
+    "description": "Twitter PIN Auth: A api wrapper to authenticate with twitter using the PIN-based authorization method",
+    "version": "0.1.0",
+    "url": "https://github.com/chrisenytc/twitter-pin-auth",
+    "options": {
+        "outdir": "./docs",
+        "paths": "./lib"
+    }
+}

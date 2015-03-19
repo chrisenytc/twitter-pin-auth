@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>lib/twitter-pin-auth.js - Twitter PIN Auth</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="../assets/css/logo.png" title="Twitter PIN Auth" width="117" height="52"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.1.0</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                                <li><a href="../classes/TwitterPinAuth.html">TwitterPinAuth</a></li>
+                            </ul>
+                
+                            <ul id="api-modules" class="apis modules">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1 class="file-heading">File: lib/twitter-pin-auth.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+/*
+ * twitter-pin-auth
+ * https://github.com/chrisenytc/twitter-pin-auth
+ *
+ * Copyright (c) 2015, Christopher EnyTC
+ * Licensed under the MIT license.
+ */
+
+&#x27;use strict&#x27;;
+
+/**
+ * Module Dependencies
+ */
+
+var P = require(&#x27;bluebird&#x27;),
+    OAuth = require(&#x27;oauth&#x27;).OAuth;
+
+/**
+ * @class TwitterPinAuth
+ *
+ * @constructor
+ *
+ * Constructor responsible for provide PIN-based authorization
+ *
+ * @example
+ *
+ *     var api = new TwitterPinAuth(&#x27;consumerKey&#x27;, &#x27;consumerSecret&#x27;);
+ *
+ * @param {String} consumerKey The twitter consumer key
+ * @param {String} consumerSecret The twitter consumer secret
+ */
+
+var TwitterPinAuth = module.exports = function TwitterPinAuth(consumerKey, consumerSecret) {
+    if (!consumerKey || !consumerSecret || consumerKey === &#x27;&#x27; || consumerSecret === &#x27;&#x27;) {
+        throw new Error(&#x27;consumerKey and consumerSecret is required!&#x27;);
+    }
+    // Api data
+    this.REQUEST_TOKEN_URL = &#x27;https://api.twitter.com/oauth/request_token&#x27;;
+    this.ACCESS_TOKEN_URL = &#x27;https://api.twitter.com/oauth/access_token&#x27;;
+    this.OAUTH_VERSION = &#x27;1.0&#x27;;
+    this.HASH_VERSION = &#x27;HMAC-SHA1&#x27;;
+    // App Credentials
+    this.consumerKey = consumerKey;
+    this.consumerSecret = consumerSecret;
+    this._data = {};
+    //Instance
+    this.oa = new OAuth(this.REQUEST_TOKEN_URL, this.ACCESS_TOKEN_URL, consumerKey, consumerSecret, this.OAUTH_VERSION, null, this.HASH_VERSION);
+};
+
+/*
+ * Public Methods
+ */
+
+/**
+ * Method responsible for request a authorization url
+ *
+ * @example
+ *
+ *     api.requestAuthUrl(function(err, url) {
+ *          console.log(url);
+ *     });
+ *
+ * @method requestAuthUrl
+ * @public
+ * @param {Function} callback A callback with authorization url
+ */
+
+TwitterPinAuth.prototype.requestAuthUrl = function(cb) {
+    var that = this;
+    return new P(function(resolve, reject) {
+        that.oa.getOAuthRequestToken(function(err, oauthToken, oauthTokenSecret) {
+            if (err) {
+                reject(err);
+            } else {
+                //Save current credentials
+                that._data.oauthToken = oauthToken;
+                that._data.oauthTokenSecret = oauthTokenSecret;
+                //Resolve
+                resolve(&#x27;https://twitter.com/oauth/authorize?oauth_token=&#x27; + oauthToken);
+            }
+        });
+    }).nodeify(cb);
+};
+
+/**
+ * Method responsible for generate a accessTokenKey and accessTokenSecret
+ *
+ * @example
+ *
+ *     api.authorize(3321883, function(err, data) {
+ *          console.log(data.accessTokenKey, data.accessTokenSecret);
+ *     });
+ *
+ * @method authorize
+ * @public
+ * @param {Number} pin A pin number
+ * @param {Function} callback A callback with accessTokenKey and accessTokenSecret
+ */
+
+TwitterPinAuth.prototype.authorize = function(pin, cb) {
+    var that = this;
+    return new P(function(resolve, reject) {
+        that.oa.getOAuthAccessToken(that._data.oauthToken, that._data.oauthTokenSecret, pin,
+            function(err, oauthAccessToken, oauthAccessTokenSecret) {
+                if (err) {
+                    if (parseInt(err.statusCode) === 401) {
+                        reject(new Error(&#x27;The pin number you have entered is incorrect!&#x27;));
+                    } else {
+                        reject(err);
+                    }
+                } else {
+                    resolve({
+                        accessTokenKey: oauthAccessToken,
+                        accessTokenSecret: oauthAccessTokenSecret
+                    });
+                }
+            });
+    }).nodeify(cb);
+};
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>
