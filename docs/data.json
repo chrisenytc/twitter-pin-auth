@@ -2,7 +2,7 @@
     "project": {
         "name": "Twitter PIN Auth",
         "description": "Twitter PIN Auth: A api wrapper to authenticate with twitter using the PIN-based authorization method",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "url": "https://github.com/chrisenytc/twitter-pin-auth"
     },
     "files": {
@@ -75,7 +75,7 @@
         },
         {
             "file": "lib/twitter-pin-auth.js",
-            "line": 82,
+            "line": 83,
             "description": "Method responsible for generate a accessTokenKey and accessTokenSecret",
             "example": [
                 "\n\n    api.authorize(3321883, function(err, data) {\n         console.log(data.accessTokenKey, data.accessTokenSecret);\n    });"

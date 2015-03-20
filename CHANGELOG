@@ -1,3 +1,7 @@
+v0.1.2:
+  date: 2015-3-19
+  changes:
+    - Fix implementation error.
 v0.1.1:
   date: 2015-3-19
   changes:
