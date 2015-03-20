@@ -17,7 +17,7 @@
                 <h1><img src="../assets/css/logo.png" title="Twitter PIN Auth" width="117" height="52"></h1>
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.1.0</em>
+            <em>API Docs for: 0.1.1</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -112,12 +112,13 @@ var P = require(&#x27;bluebird&#x27;),
  */
 
 var TwitterPinAuth = module.exports = function TwitterPinAuth(consumerKey, consumerSecret) {
-    if (!consumerKey || !consumerSecret || consumerKey === &#x27;&#x27; || consumerSecret === &#x27;&#x27;) {
+    if (!this._isValidKeys(consumerKey, consumerSecret)) {
         throw new Error(&#x27;consumerKey and consumerSecret is required!&#x27;);
     }
     // Api data
     this.REQUEST_TOKEN_URL = &#x27;https://api.twitter.com/oauth/request_token&#x27;;
     this.ACCESS_TOKEN_URL = &#x27;https://api.twitter.com/oauth/access_token&#x27;;
+    this.AUTH_PARTIAL_URL = &#x27;https://twitter.com/oauth/authorize?oauth_token=&#x27;;
     this.OAUTH_VERSION = &#x27;1.0&#x27;;
     this.HASH_VERSION = &#x27;HMAC-SHA1&#x27;;
     // App Credentials
@@ -151,14 +152,10 @@ TwitterPinAuth.prototype.requestAuthUrl = function(cb) {
     return new P(function(resolve, reject) {
         that.oa.getOAuthRequestToken(function(err, oauthToken, oauthTokenSecret) {
             if (err) {
-                reject(err);
-            } else {
-                //Save current credentials
-                that._data.oauthToken = oauthToken;
-                that._data.oauthTokenSecret = oauthTokenSecret;
-                //Resolve
-                resolve(&#x27;https://twitter.com/oauth/authorize?oauth_token=&#x27; + oauthToken);
+                return reject(err);
             }
+            that._saveCredentials(oauthToken, oauthTokenSecret);
+            resolve(that.AUTH_PARTIAL_URL + oauthToken);
         });
     }).nodeify(cb);
 };
@@ -183,20 +180,35 @@ TwitterPinAuth.prototype.authorize = function(pin, cb) {
     return new P(function(resolve, reject) {
         that.oa.getOAuthAccessToken(that._data.oauthToken, that._data.oauthTokenSecret, pin,
             function(err, oauthAccessToken, oauthAccessTokenSecret) {
-                if (err) {
-                    if (parseInt(err.statusCode) === 401) {
-                        reject(new Error(&#x27;The pin number you have entered is incorrect!&#x27;));
-                    } else {
-                        reject(err);
-                    }
-                } else {
-                    resolve({
-                        accessTokenKey: oauthAccessToken,
-                        accessTokenSecret: oauthAccessTokenSecret
-                    });
+                var error = that._identifyAuthorizationError(err);
+                if (error) {
+                    return reject(error);
                 }
+                resolve({
+                    accessTokenKey: oauthAccessToken,
+                    accessTokenSecret: oauthAccessTokenSecret
+                });
             });
     }).nodeify(cb);
+};
+
+TwitterPinAuth.prototype._saveCredentials = function (oauthToken, oauthTokenSecret) {
+    this._data.oauthToken = oauthToken;
+    this._data.oauthTokenSecret = oauthTokenSecret;
+};
+
+TwitterPinAuth.prototype._isValidKeys = function (consumerKey, consumerSecret) {
+    if (!consumerKey || !consumerSecret || consumerKey === &#x27;&#x27; || consumerSecret === &#x27;&#x27;) {
+        return false;
+    }
+    return true;
+};
+
+TwitterPinAuth.prototype._identifyAuthorizationError = function (err) {
+    if(parseInt(err.statusCode) === 401) {
+        return new Error(&#x27;The PIN number you have entered is incorrect!&#x27;);
+    }
+    return err;
 };
 
     </pre>
