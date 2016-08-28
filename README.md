@@ -7,7 +7,7 @@ Install the module with: `npm install twitter-pin-auth`
 
 ```javascript
 var TwitterPinAuth = require('twitter-pin-auth');
-var twitterPinAuth = new TwitterPinAuth('consumerKey', 'consumerSecret');
+var twitterPinAuth = new TwitterPinAuth('consumerKey', 'consumerSecret', 'screen_name_that_will_prefilled', false); // <- Use Force login with user that alrealy logged in
 ```
 
 ## Documentation
