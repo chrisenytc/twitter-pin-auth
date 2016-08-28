@@ -1,11 +1,11 @@
 {
   "name": "twitter-pin-auth",
   "description": "A api wrapper to authenticate with twitter using the PIN-based authorization method",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "homepage": "https://github.com/chrisenytc/twitter-pin-auth",
   "author": {
     "name": "Christopher EnyTC",
-    "email": "chrisenytc@gmail.com"
+    "email": "chris@enytc.com"
   },
   "repository": {
     "type": "git",
@@ -14,12 +14,7 @@
   "bugs": {
     "url": "https://github.com/chrisenytc/twitter-pin-auth/issues"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/chrisenytc/twitter-pin-auth/blob/master/LICENSE"
-    }
-  ],
+  "license": "MIT",
   "main": "lib/twitter-pin-auth",
   "engines": {
     "node": ">= 0.10.36",
