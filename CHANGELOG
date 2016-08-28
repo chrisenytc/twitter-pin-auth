@@ -1,3 +1,8 @@
+v0.2.0:
+  date: 2016-8-28
+  changes:
+    - Support for screenName and forceLogin
+    - Specify callback uri as 'oob' explicitly
 v0.1.2:
   date: 2015-3-19
   changes:
